@@ -21,6 +21,7 @@
     <script>
       const canvas = document.getElementById("myCanvas");
       const ctx = canvas.getContext("2d");
+      const ballRadius = 10;
       let x = canvas.width / 2;
       let y = canvas.height - 30;
       let dx = 2;
@@ -28,15 +29,28 @@
 
       function drawBall() {
         ctx.beginPath();
-        ctx.arc(x, y, 10, 0, Math.PI * 2);
+        ctx.arc(x, y, ballRadius, 0, Math.PI * 2);
         ctx.fillStyle = "#0095DD";
         ctx.fill();
         ctx.closePath();
       }
-      
+
       function draw() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         drawBall();
+        // The ball should bounce right after if touches the wall, 
+        // not when it's already halfway in the wall, so let's adjust our 
+        // statements a bit to include that. When the distance between the center of the ball 
+        //and the edge of the wall is exactly the same as the radius of the ball, it will change 
+        // the movement direction. Subtracting the radius from one edge's width and adding 
+        // it onto the other gives us the impression of the proper collision detection — 
+        // the ball bounces off the walls as it should do.
+        if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) {
+          dx = -dx;
+        }
+        if (y + dy > canvas.height - ballRadius || y + dy < ballRadius) {
+          dy = -dy;
+        }
         x += dx;
         y += dy;
       }
