@@ -31,6 +31,16 @@
       let y = canvas.height - 30;
       let dx = 2;
       let dy = -2;
+      let color = "#0095DD";
+
+      function randColor() {
+        return (
+          "#" +
+          (Math.floor(Math.random() * 0x1000000) + 0x1000000)
+            .toString(16)
+            .substr(1)
+        );
+      }
 
       // Add two variable for storing information on whether the left or right control button
       // is pressed
@@ -67,7 +77,13 @@
       function drawBall() {
         ctx.beginPath();
         ctx.arc(x, y, ballRadius, 0, Math.PI * 2);
-        ctx.fillStyle = "#0095DD";
+        if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) {
+          color = randColor();
+        }
+        if (y + dy > canvas.height - ballRadius || y + dy < ballRadius) {
+          color = randColor();
+        }
+        ctx.fillStyle = color;
         ctx.fill();
         ctx.closePath();
       }
@@ -128,7 +144,6 @@
       }
 
       const interval = setInterval(draw, 10);
-
 
       // JavaScript code goes here
     </script>
