@@ -22,10 +22,47 @@
       const canvas = document.getElementById("myCanvas");
       const ctx = canvas.getContext("2d");
       const ballRadius = 10;
+      // Add a paddle
+      const paddleHeight = 10;
+      const paddleWidth = 75;
+      let paddleX = (canvas.width - paddleWidth) / 2;
+
       let x = canvas.width / 2;
       let y = canvas.height - 30;
       let dx = 2;
       let dy = -2;
+
+      // Add two variable for storing information on whether the left or right control button
+      // is pressed
+      let rightPressed = false;
+      let leftPressed = false;
+
+      // Add 2 event listeners for keydown and keyup events. We want to run some code to handle
+      // the paddle movement when the buttons are pressed.
+      document.addEventListener("keydown", keyDownHandler, false);
+      document.addEventListener("keyup", keyUpHandler, false);
+
+      // When the keydown event is fired on any of the keys on your keyboard (when they are pressed),
+      // the keyDownHandler() function will be executed.
+
+      // When we press a key down, this information is stored in a variable. The relevant variable in
+      // each case is set to true. When the key is released, the variable is set back to false.
+      function keyDownHandler(e) {
+        if (e.key === "Right" || e.key === "ArrowRight") {
+          rightPressed = true;
+        } else if (e.key === "Left" || e.key === "ArrowLeft") {
+          leftPressed = true;
+        }
+      }
+      // Most browsers use ArrowRight and ArrowLeft for the left/right cursor keys, but we need to
+      // also include Right and Left checks to support IE/Edge browsers.
+      function keyUpHandler(e) {
+        if (e.key === "Right" || e.key === "ArrowRight") {
+          rightPressed = false;
+        } else if (e.key === "Left" || e.key === "ArrowLeft") {
+          leftPressed = false;
+        }
+      }
 
       function drawBall() {
         ctx.beginPath();
@@ -35,21 +72,48 @@
         ctx.closePath();
       }
 
+      // Function that will draw the paddle on the screen
+      function drawPaddle() {
+        ctx.beginPath();
+        ctx.rect(
+          paddleX,
+          canvas.height - paddleHeight,
+          paddleWidth,
+          paddleHeight
+        );
+        ctx.fillStyle = "#0095DD";
+        ctx.fill();
+        ctx.closePath();
+      }
+
       function draw() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         drawBall();
-        // The ball should bounce right after if touches the wall, 
-        // not when it's already halfway in the wall, so let's adjust our 
-        // statements a bit to include that. When the distance between the center of the ball 
-        //and the edge of the wall is exactly the same as the radius of the ball, it will change 
-        // the movement direction. Subtracting the radius from one edge's width and adding 
-        // it onto the other gives us the impression of the proper collision detection — 
+        drawPaddle();
+        // The ball should bounce right after if touches the wall,
+        // not when it's already halfway in the wall, so let's adjust our
+        // statements a bit to include that. When the distance between the center of the ball
+        //and the edge of the wall is exactly the same as the radius of the ball, it will change
+        // the movement direction. Subtracting the radius from one edge's width and adding
+        // it onto the other gives us the impression of the proper collision detection —
         // the ball bounces off the walls as it should do.
         if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) {
           dx = -dx;
         }
         if (y + dy > canvas.height - ballRadius || y + dy < ballRadius) {
           dy = -dy;
+        }
+
+        if (rightPressed) {
+          paddleX += 7;
+          if (paddleX + paddleWidth > canvas.width) {
+            paddleX = canvas.width - paddleWidth;
+          }
+        } else if (leftPressed) {
+          paddleX -= 7;
+          if (paddleX < 0) {
+            paddleX = 0;
+          }
         }
         x += dx;
         y += dy;
