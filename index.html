@@ -41,6 +41,8 @@
       let dx = 2;
       let dy = -2;
       let color = "#0095DD";
+      let score = 0;
+      let lives = 3;
 
       const bricks = [];
       // Loop through the rows and columns and create the new bricks
@@ -50,8 +52,6 @@
           bricks[c][r] = { x: 0, y: 0, status: 1 };
         }
       }
-
-      let score = 0;
 
       function randColor() {
         return (
@@ -123,7 +123,6 @@
                 if (score === brickRowCount * brickColumnCount) {
                   alert("YOU WIN, CONGRATULATIONS!");
                   document.location.reload();
-                  clearInterval(interval); // Needed for Chrome to end game
                 }
               }
             }
@@ -136,6 +135,13 @@
         ctx.font = "16px Arial";
         ctx.fillStyle = "#0095DD";
         ctx.fillText(`Score: ${score}`, 8, 20);
+      }
+
+      // Func to keep and update lives
+      function drawLives() {
+        ctx.font = "16px Arial";
+        ctx.fillStyle = "#0095DD";
+        ctx.fillText(`Lives: ${lives}`, canvas.width - 65, 20);
       }
 
       function drawBall() {
@@ -195,6 +201,7 @@
         drawBall();
         drawPaddle();
         drawScore();
+        drawLives();
         collisionDetection();
         // The ball should bounce right after if touches the wall,
         // not when it's already halfway in the wall, so let's adjust our
@@ -212,12 +219,21 @@
           if (x > paddleX && x < paddleX + paddleWidth) {
             dy = -dy;
           } else {
-            alert("GAME OVER");
-            document.location.reload();
-            clearInterval(interval);
+            // Decrease # of livse until 0
+            // Also resest ball & paddle when player begins new life
+            lives--;
+            if (!lives) {
+              alert("GAME OVER");
+              document.location.reload();
+            } else {
+              x = canvas.width / 2;
+              y = canvas.height - 30;
+              dx = 2;
+              dy = -2;
+              paddleX = (canvas.width - paddleWidth) / 2;
+            }
           }
         }
-
         if (rightPressed) {
           paddleX += 7;
           if (paddleX + paddleWidth > canvas.width) {
@@ -231,9 +247,10 @@
         }
         x += dx;
         y += dy;
+        requestAnimationFrame(draw);
       }
 
-      const interval = setInterval(draw, 10);
+      draw();
 
       // JavaScript code goes here
     </script>
