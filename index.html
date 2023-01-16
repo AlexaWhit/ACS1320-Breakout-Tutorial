@@ -4,14 +4,17 @@
     <meta charset="utf-8" />
     <title>Gamedev Canvas Workshop</title>
     <style>
-      * {
-        padding: 0;
-        margin: 0;
+      body {
+        background-image: url("https://wallpaperaccess.com/full/1197640.jpg");
+        background-size: cover;
+        height: 100vh;
       }
       canvas {
-        background: #eee;
+        background: #ef92f7;
         display: block;
         margin: 0 auto;
+        margin-top: 80px;
+        border: 2px solid purple;
       }
     </style>
   </head>
@@ -27,9 +30,9 @@
       const paddleWidth = 75;
       let paddleX = (canvas.width - paddleWidth) / 2;
       // Add brick variables
-      const brickRowCount = 3;
-      const brickColumnCount = 5;
-      const brickWidth = 75;
+      const brickRowCount = 4;
+      const brickColumnCount = 7;
+      const brickWidth = 52;
       const brickHeight = 20;
       const brickPadding = 10;
       // So bricks wob't start being drawb right from edge of canvas
@@ -133,14 +136,14 @@
       // Func to keep & update score
       function drawScore() {
         ctx.font = "16px Arial";
-        ctx.fillStyle = "#0095DD";
+        ctx.fillStyle = "#cd12de";
         ctx.fillText(`Score: ${score}`, 8, 20);
       }
 
       // Func to keep and update lives
       function drawLives() {
         ctx.font = "16px Arial";
-        ctx.fillStyle = "#0095DD";
+        ctx.fillStyle = "#FF5F1F";
         ctx.fillText(`Lives: ${lives}`, canvas.width - 65, 20);
       }
 
@@ -173,7 +176,7 @@
               bricks[c][r].y = brickY;
               ctx.beginPath();
               ctx.rect(brickX, brickY, brickWidth, brickHeight);
-              ctx.fillStyle = "#0095DD";
+              ctx.fillStyle = "#35fc03";
               ctx.fill();
               ctx.closePath();
             }
@@ -190,7 +193,7 @@
           paddleWidth,
           paddleHeight
         );
-        ctx.fillStyle = "#0095DD";
+        ctx.fillStyle = "#fc03b6";
         ctx.fill();
         ctx.closePath();
       }
