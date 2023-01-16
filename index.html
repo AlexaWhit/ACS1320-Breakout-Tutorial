@@ -71,6 +71,8 @@
       // the paddle movement when the buttons are pressed.
       document.addEventListener("keydown", keyDownHandler, false);
       document.addEventListener("keyup", keyUpHandler, false);
+      // Add listener for mouse movement
+      document.addEventListener("mousemove", mouseMoveHandler, false);
 
       // When the keydown event is fired on any of the keys on your keyboard (when they are pressed),
       // the keyDownHandler() function will be executed.
@@ -91,6 +93,14 @@
           rightPressed = false;
         } else if (e.key === "Left" || e.key === "ArrowLeft") {
           leftPressed = false;
+        }
+      }
+
+      // Update paddle position based on pointer coordinates
+      function mouseMoveHandler(e) {
+        const relativeX = e.clientX - canvas.offsetLeft;
+        if (relativeX > 0 && relativeX < canvas.width) {
+          paddleX = relativeX - paddleWidth / 2;
         }
       }
 
@@ -149,8 +159,8 @@
           for (let r = 0; r < brickRowCount; r++) {
             // if status is 1, draw it, but if 0 then it was hit by bll
             if (bricks[c][r].status === 1) {
-            // Each brick can be placed in its correct place row and column, with
-            // padding bw each brick, drawn at an offset from the L and top canvas edges  
+              // Each brick can be placed in its correct place row and column, with
+              // padding bw each brick, drawn at an offset from the L and top canvas edges
               const brickX = c * (brickWidth + brickPadding) + brickOffsetLeft;
               const brickY = r * (brickHeight + brickPadding) + brickOffsetTop;
               bricks[c][r].x = brickX;
