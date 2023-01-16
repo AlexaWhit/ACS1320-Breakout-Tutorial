@@ -1,5 +1,4 @@
 # ACS1320: Breakout Tutorial
-# ACS1710: Star Wars API Character Search
 Interactive JavaScript Breakout Game
 
 ## Description
