@@ -51,6 +51,8 @@
         }
       }
 
+      let score = 0;
+
       function randColor() {
         return (
           "#" +
@@ -106,10 +108,24 @@
               ) {
                 dy = -dy;
                 b.status = 0;
+                score++;
+                // Display winning message is all bricks gone
+                if (score === brickRowCount * brickColumnCount) {
+                  alert("YOU WIN, CONGRATULATIONS!");
+                  document.location.reload();
+                  clearInterval(interval); // Needed for Chrome to end game
+                }
               }
             }
           }
         }
+      }
+
+      // Func to keep & update score
+      function drawScore() {
+        ctx.font = "16px Arial";
+        ctx.fillStyle = "#0095DD";
+        ctx.fillText(`Score: ${score}`, 8, 20);
       }
 
       function drawBall() {
@@ -168,6 +184,7 @@
         drawBricks();
         drawBall();
         drawPaddle();
+        drawScore();
         collisionDetection();
         // The ball should bounce right after if touches the wall,
         // not when it's already halfway in the wall, so let's adjust our
