@@ -15,4 +15,5 @@ JavaScript tutorial which creates the vintage Breakout game.
 Click the "Go Live" button and the game will launch in your default internet browser.
 
 
-<img width="969" alt="Screen Shot 2023-01-15 at 9 56 45 PM" src="https://user-images.githubusercontent.com/112434021/212601739-cce705ad-182b-4adf-b876-0b7890868fd2.png">
+<img width="1314" alt="Screen Shot 2023-01-15 at 11 47 24 PM" src="https://user-images.githubusercontent.com/112434021/212614976-47cdeff1-625d-4b0a-a3a8-fce9a526a36c.png">
+
