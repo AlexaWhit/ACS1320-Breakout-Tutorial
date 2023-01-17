@@ -2,7 +2,7 @@
 <html lang="en-US">
   <head>
     <meta charset="utf-8" />
-    <title>Gamedev Canvas Workshop</title>
+    <title>Breakout Canvas Workshop</title>
     <style>
       body {
         background-image: url("https://wallpaperaccess.com/full/1197640.jpg");
@@ -35,7 +35,7 @@
       const brickWidth = 52;
       const brickHeight = 20;
       const brickPadding = 10;
-      // So bricks wob't start being drawb right from edge of canvas
+      // So bricks won't start being drawn right from edge of canvas
       const brickOffsetTop = 30;
       const brickOffsetLeft = 30;
 
@@ -56,6 +56,7 @@
         }
       }
 
+      // Func to choose random hex color for ball
       function randColor() {
         return (
           "#" +
@@ -255,7 +256,6 @@
 
       draw();
 
-      // JavaScript code goes here
     </script>
   </body>
 </html>
