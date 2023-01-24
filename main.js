@@ -9,15 +9,15 @@ import Background from './Background.js';
 const canvas = document.getElementById('myCanvas');
 const ctx = canvas.getContext('2d');
 
+const x = canvas.width / 2;
+const y = canvas.height - 30;
+
 // Keep track of ball touching wall/bricks by tracking radius
 const ballRadius = 10;
 
 // Paddle variables
 const paddleWidth = 75;
 let paddleX = (canvas.width - paddleWidth) / 2;
-
-const x = canvas.width / 2;
-const y = canvas.height - 30;
 
 // Brick variables
 const brickRowCount = 4;
@@ -45,7 +45,7 @@ const score = 0;
 const lives = 3;
 
 // Instances of new objects
-const ball = new Ball(x, y);
+const ball = new Ball('red', x, y);
 const paddle = new Paddle(paddleX, canvas.height - 10);
 const trackScore = new Score(8, 20, score);
 const trackLives = new Lives(canvas.width - 65, 20, lives);
@@ -153,7 +153,6 @@ function draw() {
   drawBricks();
   ball.render(ctx);
   ball.move();
-  ball.move();
   paddle.render(ctx);
   trackScore.render(ctx);
   trackLives.render(ctx);
@@ -188,7 +187,7 @@ function draw() {
         ball.y = canvas.height - 30;
         ball.dx = 2;
         ball.dy = -2;
-        paddleX = (canvas.width, canvas.height) / 2;
+        paddleX = (canvas.width - paddle.width) / 2;
       }
     }
   }
