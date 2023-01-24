@@ -1,31 +1,36 @@
+import Ball from './Ball.js';
+import Brick from './Brick.js';
+import Lives from './Lives.js';
+import Paddle from './Paddle.js';
+import Score from './Score.js';
+import Background from './Background.js';
+
+// Game is rendered on HTML <canvas>
 const canvas = document.getElementById('myCanvas');
 const ctx = canvas.getContext('2d');
+
+// Keep track of ball touching wall/bricks by tracking radius
 const ballRadius = 10;
-// Add a paddle
-const paddleHeight = 10;
+
+// Paddle variables
 const paddleWidth = 75;
 let paddleX = (canvas.width - paddleWidth) / 2;
-// Add brick variables
+
+const x = canvas.width / 2;
+const y = canvas.height - 30;
+
+// Brick variables
 const brickRowCount = 4;
 const brickColumnCount = 7;
 const brickWidth = 52;
 const brickHeight = 20;
 const brickPadding = 10;
-// So bricks won't start being drawn right from edge of canvas
 const brickOffsetTop = 30;
 const brickOffsetLeft = 30;
 
-let x = canvas.width / 2;
-let y = canvas.height - 30;
-let dx = 2;
-let dy = -2;
-let color = '#0095DD';
-let score = 0;
-let lives = 3;
-
-const bricks = [];
 // Loop through the rows and columns and create the new bricks
-// eslint-disable-next-line no-plusplus
+// Array of columns and rows of bricks
+const bricks = [];
 for (let c = 0; c < brickColumnCount; c += 1) {
   bricks[c] = [];
   for (let r = 0; r < brickRowCount; r += 1) {
@@ -33,75 +38,84 @@ for (let c = 0; c < brickColumnCount; c += 1) {
   }
 }
 
-// Func to choose random hex color for ball
-function randColor() {
-  return (
-    `#${
-      (Math.floor(Math.random() * 0x1000000) + 0x1000000)
-        .toString(16)
-        .substr(1)}`
-  );
-}
+// Score variable (start with 0)
+const score = 0;
 
-// Add two variable for storing information on whether the left or right control button
-// is pressed
+// Lives variable (start with 3)
+const lives = 3;
+
+// Instances of new objects
+const ball = new Ball(x, y);
+const paddle = new Paddle(paddleX, canvas.height - 10);
+const trackScore = new Score(8, 20, score);
+const trackLives = new Lives(canvas.width - 65, 20, lives);
+const background = new Background(0, 0, canvas.width, canvas.height);
+
+// Add two variable for storing information on whether the left or right control button is pressed
 let rightPressed = false;
 let leftPressed = false;
 
 // When we press a key down, this information is stored in a variable. The relevant variable in
 // each case is set to true. When the key is released, the variable is set back to false.
-function keyDownHandler(e) {
-  if (e.key === 'Right' || e.key === 'ArrowRight') {
+function keyDownHandler({ key }) {
+  if (key === 'Right' || key === 'ArrowRight') {
     rightPressed = true;
-  } else if (e.key === 'Left' || e.key === 'ArrowLeft') {
+  } else if (key === 'Left' || key === 'ArrowLeft') {
     leftPressed = true;
   }
 }
 // Most browsers use ArrowRight and ArrowLeft for the left/right cursor keys, but we need to
 // also include Right and Left checks to support IE/Edge browsers.
-function keyUpHandler(e) {
-  if (e.key === 'Right' || e.key === 'ArrowRight') {
+function keyUpHandler({ key }) {
+  if (key === 'Right' || key === 'ArrowRight') {
     rightPressed = false;
-  } else if (e.key === 'Left' || e.key === 'ArrowLeft') {
+  } else if (key === 'Left' || key === 'ArrowLeft') {
     leftPressed = false;
   }
 }
 
 // Update paddle position based on pointer coordinates
-function mouseMoveHandler(e) {
-  const relativeX = e.clientX - canvas.offsetLeft;
+function mouseMoveHandler({ clientX }) {
+  const relativeX = clientX - canvas.offsetLeft;
   if (relativeX > 0 && relativeX < canvas.width) {
-    paddleX = relativeX - paddleWidth / 2;
+    paddle.moveBy(relativeX - paddleWidth / 2);
   }
 }
 
-// Add 2 event listeners for keydown and keyup events. We want to run some code to handle
-// the paddle movement when the buttons are pressed.
-document.addEventListener('keydown', keyDownHandler, false);
-document.addEventListener('keyup', keyUpHandler, false);
-// Add listener for mouse movement
-document.addEventListener('mousemove', mouseMoveHandler, false);
+const { addEventListener } = document;
 
-// When the keydown event is fired on any of the keys on your keyboard (when they are pressed),
-// the keyDownHandler() function will be executed.
+addEventListener('keydown', keyDownHandler, false);
+addEventListener('keyup', keyUpHandler, false);
+addEventListener('mousemove', mouseMoveHandler, false);
+
+// Func to move the paddle
+function paddleMove() {
+  if (rightPressed && paddle.x < canvas.width - paddleWidth) {
+    paddle.moveTo(7);
+  } else if (leftPressed && paddle.x > 0) {
+    paddle.moveTo(-7);
+  }
+}
 
 // Func to detect collision bw ball and brick
 function collisionDetection() {
   for (let c = 0; c < brickColumnCount; c += 1) {
     for (let r = 0; r < brickRowCount; r += 1) {
       const b = bricks[c][r];
-      if (b.status === 1) {
+      const { x: brickX, y: brickY, status } = b;
+      if (status === 1) {
         if (
-          x > b.x
-          && x < b.x + brickWidth
-          && y > b.y
-          && y < b.y + brickHeight
+          ball.x > brickX
+          && ball.x < brickX + brickWidth
+          && ball.y > brickY
+          && ball.y < brickY + brickHeight
         ) {
-          dy = -dy;
+          ball.dy = -ball.dy;
           b.status = 0;
-          score += 1;
+          trackScore.score += 1;
+          ball.randColor();
           // Display winning message is all bricks gone
-          if (score === brickRowCount * brickColumnCount) {
+          if (trackScore.score === brickRowCount * brickColumnCount) {
             // eslint-disable-next-line no-alert
             alert('YOU WIN, CONGRATULATIONS!');
             document.location.reload();
@@ -110,34 +124,6 @@ function collisionDetection() {
       }
     }
   }
-}
-
-// Func to keep & update score
-function drawScore() {
-  ctx.font = '16px Arial';
-  ctx.fillStyle = '#cd12de';
-  ctx.fillText(`Score: ${score}`, 8, 20);
-}
-
-// Func to keep and update lives
-function drawLives() {
-  ctx.font = '16px Arial';
-  ctx.fillStyle = '#FF5F1F';
-  ctx.fillText(`Lives: ${lives}`, canvas.width - 65, 20);
-}
-
-function drawBall() {
-  ctx.beginPath();
-  ctx.arc(x, y, ballRadius, 0, Math.PI * 2);
-  if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) {
-    color = randColor();
-  }
-  if (y + dy > canvas.height - ballRadius || y + dy < ballRadius) {
-    color = randColor();
-  }
-  ctx.fillStyle = color;
-  ctx.fill();
-  ctx.closePath();
 }
 
 // Func to loop through all bricks in array and draw
@@ -153,37 +139,24 @@ function drawBricks() {
         const brickY = r * (brickHeight + brickPadding) + brickOffsetTop;
         bricks[c][r].x = brickX;
         bricks[c][r].y = brickY;
-        ctx.beginPath();
-        ctx.rect(brickX, brickY, brickWidth, brickHeight);
-        ctx.fillStyle = '#35fc03';
-        ctx.fill();
-        ctx.closePath();
+        const brick = new Brick(brickX, brickY);
+        brick.render(ctx);
       }
     }
   }
 }
 
-// Function that will draw the paddle on the screen
-function drawPaddle() {
-  ctx.beginPath();
-  ctx.rect(
-    paddleX,
-    canvas.height - paddleHeight,
-    paddleWidth,
-    paddleHeight,
-  );
-  ctx.fillStyle = '#fc03b6';
-  ctx.fill();
-  ctx.closePath();
-}
-
+// Func to draw all parts of the game
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
+  background.render(ctx);
   drawBricks();
-  drawBall();
-  drawPaddle();
-  drawScore();
-  drawLives();
+  ball.render(ctx);
+  ball.move();
+  ball.move();
+  paddle.render(ctx);
+  trackScore.render(ctx);
+  trackLives.render(ctx);
   collisionDetection();
   // The ball should bounce right after if touches the wall,
   // not when it's already halfway in the wall, so let's adjust our
@@ -192,44 +165,34 @@ function draw() {
   // the movement direction. Subtracting the radius from one edge's width and adding
   // it onto the other gives us the impression of the proper collision detection —
   // the ball bounces off the walls as it should do.
-  if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) {
-    dx = -dx;
+  if (ball.x + ball.dx > canvas.width - ballRadius || ball.x + ball.dx < ballRadius) {
+    ball.dx = -ball.dx;
+    ball.randColor();
   }
-  if (y + dy < ballRadius) {
-    dy = -dy;
-  } else if (y + dy > canvas.height - ballRadius) {
-    if (x > paddleX && x < paddleX + paddleWidth) {
-      dy = -dy;
+  if (ball.y + ball.dy < ballRadius) {
+    ball.dy = -ball.dy;
+  } else if (ball.y + ball.dy > canvas.height - ballRadius) {
+    if (ball.x > paddle.x && ball.x < paddle.x + paddle.width) {
+      ball.dy = -ball.dy;
+      ball.randColor();
     } else {
-      // Decrease # of livse until 0
+      // Decrease # of lives until 0
       // Also resest ball & paddle when player begins new life
-      lives -= 1;
-      if (!lives) {
+      trackLives.lives -= 1;
+      if (!trackLives.lives) {
         // eslint-disable-next-line no-alert
         alert('GAME OVER');
         document.location.reload();
       } else {
-        x = canvas.width / 2;
-        y = canvas.height - 30;
-        dx = 2;
-        dy = -2;
-        paddleX = (canvas.width - paddleWidth) / 2;
+        ball.x = canvas.width / 2;
+        ball.y = canvas.height - 30;
+        ball.dx = 2;
+        ball.dy = -2;
+        paddleX = (canvas.width, canvas.height) / 2;
       }
     }
   }
-  if (rightPressed) {
-    paddleX += 7;
-    if (paddleX + paddleWidth > canvas.width) {
-      paddleX = canvas.width - paddleWidth;
-    }
-  } else if (leftPressed) {
-    paddleX -= 7;
-    if (paddleX < 0) {
-      paddleX = 0;
-    }
-  }
-  x += dx;
-  y += dy;
+  paddleMove();
   requestAnimationFrame(draw);
 }
 
