@@ -1,9 +1,8 @@
-import Ball from './Ball.js';
-import Brick from './Brick.js';
-import Lives from './Lives.js';
-import Paddle from './Paddle.js';
-import Score from './Score.js';
-import Background from './Background.js';
+import Background from './classes/Background.js';
+import Ball from './classes/Ball.js';
+import Bricks from './classes/Bricks.js';
+import GameLabel from './classes/GameLabel.js';
+import Paddle from './classes/Paddle.js';
 
 // Game is rendered on HTML <canvas>
 const canvas = document.getElementById('myCanvas');
@@ -22,21 +21,6 @@ let paddleX = (canvas.width - paddleWidth) / 2;
 // Brick variables
 const brickRowCount = 4;
 const brickColumnCount = 7;
-const brickWidth = 52;
-const brickHeight = 20;
-const brickPadding = 10;
-const brickOffsetTop = 30;
-const brickOffsetLeft = 30;
-
-// Loop through the rows and columns and create the new bricks
-// Array of columns and rows of bricks
-const bricks = [];
-for (let c = 0; c < brickColumnCount; c += 1) {
-  bricks[c] = [];
-  for (let r = 0; r < brickRowCount; r += 1) {
-    bricks[c][r] = { x: 0, y: 0, status: 1 };
-  }
-}
 
 // Score variable (start with 0)
 const score = 0;
@@ -45,11 +29,12 @@ const score = 0;
 const lives = 3;
 
 // Instances of new objects
-const ball = new Ball('red', x, y);
+const ball = new Ball('pink', x, y);
 const paddle = new Paddle(paddleX, canvas.height - 10);
-const trackScore = new Score(8, 20, score);
-const trackLives = new Lives(canvas.width - 65, 20, lives);
+const trackScore = new GameLabel(8, 20, 'Score: ', score);
+const trackLives = new GameLabel(canvas.width - 65, 20, 'Lives: ', lives);
 const background = new Background(0, 0, canvas.width, canvas.height);
+const gameBricks = new Bricks();
 
 // Add two variable for storing information on whether the left or right control button is pressed
 let rightPressed = false;
@@ -99,23 +84,22 @@ function paddleMove() {
 
 // Func to detect collision bw ball and brick
 function collisionDetection() {
-  for (let c = 0; c < brickColumnCount; c += 1) {
-    for (let r = 0; r < brickRowCount; r += 1) {
-      const b = bricks[c][r];
-      const { x: brickX, y: brickY, status } = b;
-      if (status === 1) {
+  for (let c = 0; c < gameBricks.cols; c += 1) {
+    for (let r = 0; r < gameBricks.rows; r += 1) {
+      const b = gameBricks.bricks[c][r];
+      if (b.status === true) {
         if (
-          ball.x > brickX
-          && ball.x < brickX + brickWidth
-          && ball.y > brickY
-          && ball.y < brickY + brickHeight
+          ball.x > b.x
+          && ball.x < b.x + gameBricks.brickWidth
+          && ball.y > b.y
+          && ball.y < b.y + gameBricks.brickHeight
         ) {
           ball.dy = -ball.dy;
           b.status = 0;
-          trackScore.score += 1;
+          trackScore.value += 1;
           ball.randColor();
           // Display winning message is all bricks gone
-          if (trackScore.score === brickRowCount * brickColumnCount) {
+          if (trackScore.value === brickRowCount * brickColumnCount) {
             // eslint-disable-next-line no-alert
             alert('YOU WIN, CONGRATULATIONS!');
             document.location.reload();
@@ -126,33 +110,13 @@ function collisionDetection() {
   }
 }
 
-// Func to loop through all bricks in array and draw
-// them on the screen
-function drawBricks() {
-  for (let c = 0; c < brickColumnCount; c += 1) {
-    for (let r = 0; r < brickRowCount; r += 1) {
-      // if status is 1, draw it, but if 0 then it was hit by bll
-      if (bricks[c][r].status === 1) {
-        // Each brick can be placed in its correct place row and column, with
-        // padding bw each brick, drawn at an offset from the L and top canvas edges
-        const brickX = c * (brickWidth + brickPadding) + brickOffsetLeft;
-        const brickY = r * (brickHeight + brickPadding) + brickOffsetTop;
-        bricks[c][r].x = brickX;
-        bricks[c][r].y = brickY;
-        const brick = new Brick(brickX, brickY);
-        brick.render(ctx);
-      }
-    }
-  }
-}
-
 // Func to draw all parts of the game
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   background.render(ctx);
-  drawBricks();
+  gameBricks.render(ctx);
   ball.render(ctx);
-  ball.move();
+  ball.moveTo();
   paddle.render(ctx);
   trackScore.render(ctx);
   trackLives.render(ctx);
@@ -177,8 +141,8 @@ function draw() {
     } else {
       // Decrease # of lives until 0
       // Also resest ball & paddle when player begins new life
-      trackLives.lives -= 1;
-      if (!trackLives.lives) {
+      trackLives.value -= 1;
+      if (!trackLives.value) {
         // eslint-disable-next-line no-alert
         alert('GAME OVER');
         document.location.reload();

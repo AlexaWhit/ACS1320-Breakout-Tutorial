@@ -10,7 +10,7 @@ class Ball extends Sprite {
     this.dy = -2;
   }
 
-  move() {
+  moveTo() {
     this.x += this.dx;
     this.y += this.dy;
   }
