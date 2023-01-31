@@ -43,7 +43,7 @@ let leftPressed = false;
 
 // When we press a key down, this information is stored in a variable. The relevant variable in
 // each case is set to true. When the key is released, the variable is set back to false.
-function keyDownHandler({ key } : {key:any}) {
+function keyDownHandler({ key } : {key:string}) {
   if (key === 'Right' || key === 'ArrowRight') {
     rightPressed = true;
   } else if (key === 'Left' || key === 'ArrowLeft') {
@@ -52,7 +52,7 @@ function keyDownHandler({ key } : {key:any}) {
 }
 // Most browsers use ArrowRight and ArrowLeft for the left/right cursor keys, but we need to
 // also include Right and Left checks to support IE/Edge browsers.
-function keyUpHandler({ key } : {key:any}) {
+function keyUpHandler({ key } : {key:string}) {
   if (key === 'Right' || key === 'ArrowRight') {
     rightPressed = false;
   } else if (key === 'Left' || key === 'ArrowLeft') {
@@ -61,7 +61,7 @@ function keyUpHandler({ key } : {key:any}) {
 }
 
 // Update paddle position based on pointer coordinates
-function mouseMoveHandler({ clientX } : {clientX:any}) {
+function mouseMoveHandler({ clientX } : {clientX:number}) {
   const relativeX = clientX - canvas.offsetLeft;
   if (relativeX > 0 && relativeX < canvas.width) {
     paddle.moveBy(relativeX - paddleWidth / 2);
