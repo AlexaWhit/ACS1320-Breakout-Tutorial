@@ -1,5 +1,5 @@
 // eslint-disable-next-line import/extensions
-import Sprite from './Sprite.js';
+import Sprite from './Sprite';
 
 class Brick extends Sprite {
   x: number
@@ -13,7 +13,7 @@ class Brick extends Sprite {
     this.status = true; // adds a new property
   }
 
-  render(ctx: any) {
+  render(ctx: CanvasRenderingContext2D) {
     ctx.beginPath();
     ctx.rect(this.x, this.y, this.width, this.height);
     ctx.fillStyle = '#35fc03';

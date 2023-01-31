@@ -1,5 +1,5 @@
 // eslint-disable-next-line import/extensions
-import Sprite from './Sprite.js';
+import Sprite from './Sprite';
 
 class Background extends Sprite {
   x: number
@@ -11,7 +11,7 @@ class Background extends Sprite {
     super(x, y, width, height, color);
   }
 
-  render(ctx: any) {
+  render(ctx: CanvasRenderingContext2D) {
     ctx.beginPath();
     ctx.rect(this.x, this.y, this.width, this.height);
     ctx.fillStyle = this.color;

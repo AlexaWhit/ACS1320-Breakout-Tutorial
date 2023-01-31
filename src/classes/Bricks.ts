@@ -1,5 +1,5 @@
 // eslint-disable-next-line import/extensions
-import Brick from './Brick.js';
+import Brick from './Brick';
 
 class Bricks {
   rows: number
@@ -32,7 +32,7 @@ class Bricks {
     }
   }
 
-  render(ctx: any) {
+  render(ctx: CanvasRenderingContext2D) {
     for (let c = 0; c < this.cols; c += 1) {
       for (let r = 0; r < this.rows; r += 1) {
         const brick = this.bricks[c][r];

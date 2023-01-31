@@ -1,5 +1,5 @@
 // eslint-disable-next-line import/extensions
-import Sprite from './Sprite.js';
+import Sprite from './Sprite';
 
 class GameLabel extends Sprite {
   x: number

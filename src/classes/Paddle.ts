@@ -1,5 +1,5 @@
 // eslint-disable-next-line import/extensions
-import Sprite from './Sprite.js';
+import Sprite from './Sprite';
 
 class Paddle extends Sprite {
   dx: number
@@ -21,7 +21,7 @@ class Paddle extends Sprite {
     this.x = x;
   }
 
-  render(ctx: any) {
+  render(ctx: CanvasRenderingContext2D) {
     ctx.beginPath();
     ctx.rect(this.x, this.y, this.width, this.height);
     ctx.fillStyle = this.color;

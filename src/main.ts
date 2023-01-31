@@ -1,13 +1,13 @@
 /* eslint-disable import/extensions */
-import Background from './classes/Background.js';
-import Ball from './classes/Ball.js';
-import Bricks from './classes/Bricks.js';
-import GameLabel from './classes/GameLabel.js';
-import Paddle from './classes/Paddle.js';
+import Background from './classes/Background';
+import Ball from './classes/Ball';
+import Bricks from './classes/Bricks';
+import GameLabel from './classes/GameLabel';
+import Paddle from './classes/Paddle';
 
 // Game is rendered on HTML <canvas>
 const canvas = <HTMLCanvasElement> document.getElementById('myCanvas');
-const ctx = canvas.getContext('2d');
+const ctx: CanvasRenderingContext2D = canvas.getContext('2d');
 
 const x: number = canvas.width / 2;
 const y: number = canvas.height - 30;
