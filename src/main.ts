@@ -6,7 +6,7 @@ import GameLabel from './classes/GameLabel.js';
 import Paddle from './classes/Paddle.js';
 
 // Game is rendered on HTML <canvas>
-const canvas = document.getElementById('myCanvas');
+const canvas = <HTMLCanvasElement> document.getElementById('myCanvas');
 const ctx = canvas.getContext('2d');
 
 const x: number = canvas.width / 2;
@@ -43,7 +43,7 @@ let leftPressed = false;
 
 // When we press a key down, this information is stored in a variable. The relevant variable in
 // each case is set to true. When the key is released, the variable is set back to false.
-function keyDownHandler({ key }) {
+function keyDownHandler({ key } : {key:any}) {
   if (key === 'Right' || key === 'ArrowRight') {
     rightPressed = true;
   } else if (key === 'Left' || key === 'ArrowLeft') {
@@ -52,7 +52,7 @@ function keyDownHandler({ key }) {
 }
 // Most browsers use ArrowRight and ArrowLeft for the left/right cursor keys, but we need to
 // also include Right and Left checks to support IE/Edge browsers.
-function keyUpHandler({ key }) {
+function keyUpHandler({ key } : {key:any}) {
   if (key === 'Right' || key === 'ArrowRight') {
     rightPressed = false;
   } else if (key === 'Left' || key === 'ArrowLeft') {
@@ -61,7 +61,7 @@ function keyUpHandler({ key }) {
 }
 
 // Update paddle position based on pointer coordinates
-function mouseMoveHandler({ clientX }) {
+function mouseMoveHandler({ clientX } : {clientX:any}) {
   const relativeX = clientX - canvas.offsetLeft;
   if (relativeX > 0 && relativeX < canvas.width) {
     paddle.moveBy(relativeX - paddleWidth / 2);
@@ -96,7 +96,7 @@ function collisionDetection() {
           && ball.y < b.y + gameBricks.brickHeight
         ) {
           ball.dy = -ball.dy;
-          b.status = 0;
+          b.status = false;
           trackScore.value += 1;
           ball.randColor();
           // Display winning message is all bricks gone

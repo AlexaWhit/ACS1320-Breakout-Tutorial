@@ -8,6 +8,7 @@ class GameLabel extends Sprite {
   value: number
   color: string
   font: string
+  align: string
 
   constructor(x: number, y: number, text: string, value: number, color = '#03fcf8', font = '16px Arial') {
     // call super with properties as you would initialize sprite

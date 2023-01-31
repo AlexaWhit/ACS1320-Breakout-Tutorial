@@ -4,7 +4,7 @@ import Brick from './Brick.js';
 class Bricks {
   rows: number
   cols: number
-  bricks: []
+  bricks: Brick[][]
   brickWidth: number
   brickHeight: number
   brickPadding: number
