@@ -7,6 +7,7 @@ class Background extends Sprite {
   width: number
   height: number
   color: string
+  
   constructor(x: number, y: number, width: number, height: number, color = '#f59a1b') {
     super(x, y, width, height, color);
   }

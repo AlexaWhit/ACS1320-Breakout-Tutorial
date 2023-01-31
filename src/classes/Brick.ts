@@ -8,6 +8,7 @@ class Brick extends Sprite {
   height: number
   color: string
   status: boolean
+  
   constructor(x: number, y: number, width = 55, height = 20, color = '#0095DD') {
     super(x, y, width, height, color); // pass arguments to Sprite!
     this.status = true; // adds a new property
